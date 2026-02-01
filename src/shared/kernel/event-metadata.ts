@@ -4,4 +4,6 @@ export interface EventMetadata {
   readonly aggregateType: string;
   readonly version: number;        // aggregate version
   readonly occurredAt: Date;        // timeline
+  readonly correlationId?: string;
+  readonly causationId?: string;
 }
