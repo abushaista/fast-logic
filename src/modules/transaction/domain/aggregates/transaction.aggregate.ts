@@ -64,5 +64,9 @@ export class TransactionAggregate extends EventSourcedAggregate {
                 // Handle unknown events if necessary
         }   
     }
+
+    get status(): TransactionStatus {
+        return this.transactionStatus;
+    }
     
 }

@@ -7,11 +7,11 @@ export type CardCreatedEventPayload = {
     monthlyLimit: number;
 };
 
-export class CardCreatedEvent extends DomainEvent<CardCreatedEventPayload>  {
+export class CardCreatedEvent extends DomainEvent<CardCreatedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: CardCreatedEventPayload) {
         super(eventMetadata, payload);
     }
     getEventName(): string {
-        return "CardCreated";
+        return "CardCreatedEvent";
     }
 }

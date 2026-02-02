@@ -25,10 +25,13 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
+    "@types/amqplib": "^0.10.8",
+    "@types/pg": "^8.16.0",
     "amqplib": "^0.10.9",
     "class-validator": "^0.14.3",
     "ioredis": "^5.9.2",
     "joi": "^18.0.2",
+    "pg": "^8.18.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

@@ -1,10 +1,10 @@
 import { EventMetadata } from "./event-metadata";
+import { EventSourcedAggregate } from "./event-sourced-aggregate";
 
 export class EventMetadataFactory {
     static create(params: {
         aggregateId: string;
         aggregateType: string;
-        eventType: string;
         version: number;
         correlationId?: string;
         causationId?: string;
@@ -19,5 +19,15 @@ export class EventMetadataFactory {
             causationId: params.causationId,
         };  
         
+    }
+    static next(aggregate: EventSourcedAggregate, 
+        context?: Partial<EventMetadata>): EventMetadata {
+        return this.create({
+            aggregateId: aggregate.aggregateId,
+            aggregateType: aggregate.constructor.name,
+            version: aggregate.currentVersion + 1,
+            correlationId: context?.correlationId,
+            causationId: context?.causationId,
+        });
     }
 }

@@ -3,11 +3,14 @@ export class CreateTransactionDto {
     @IsUUID()
     @IsNotEmpty()
     readonly organizationId: string;
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
-    readonly cardNo: string;
+    readonly cardId: string;
     @IsNumber()
     @IsNotEmpty()
     @IsPositive()
     readonly amount: number;
+    @IsString()
+    @IsNotEmpty()
+    readonly transactionKey: string;
 }

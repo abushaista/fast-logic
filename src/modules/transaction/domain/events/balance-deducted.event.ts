@@ -6,11 +6,11 @@ export type BalanceDeductedEventPayload = {
     currency: string;
 };
 
-export class BalanceDeductedEvent extends DomainEvent<BalanceDeductedEventPayload>  {
+export class BalanceDeductedEvent extends DomainEvent<BalanceDeductedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: BalanceDeductedEventPayload) {
         super(eventMetadata, payload);
     }
     getEventName(): string {
-        return "BalanceDeducted";
+        return "BalanceDeductedEvent";
     }
 }

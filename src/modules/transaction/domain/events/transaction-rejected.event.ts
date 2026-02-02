@@ -12,6 +12,6 @@ export class TransactionRejectedEvent extends DomainEvent<TransactionRejectedEve
     }
 
     getEventName(): string {
-        return "TransactionRejected";
+        return "TransactionRejectedEvent";
     }
 }

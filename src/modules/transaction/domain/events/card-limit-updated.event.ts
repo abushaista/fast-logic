@@ -12,6 +12,6 @@ export class CardLimitUpdatedEvent extends DomainEvent<CardLimitUpdatedEventPayl
         super(eventMetadata, payload);
     }
     getEventName(): string {
-        return "CardLimitUpdated";
-    }   
+        return "CardLimitUpdatedEvent";
+    }
 }

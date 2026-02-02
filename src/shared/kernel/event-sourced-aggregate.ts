@@ -18,6 +18,12 @@ export abstract class EventSourcedAggregate {
     return [...this._uncommittedEvents];
   }
 
+  pullUncommittedEvents(): DomainEvent[] {
+    const events = [...this._uncommittedEvents];
+    this._uncommittedEvents.length = 0;
+    return events;
+  }
+
   loadFromHistory(events: DomainEvent[]): void {
     for (const event of events) {
       this.when(event);
