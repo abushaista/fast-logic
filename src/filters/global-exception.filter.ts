@@ -1,8 +1,8 @@
 import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpStatus,
+    ExceptionFilter,
+    Catch,
+    ArgumentsHost,
+    HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ConcurrencyException } from 'src/shared/exceptions/concurrency.exception';
@@ -26,12 +26,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             error: {
                 type: mappedResponse.type,
                 message: mappedResponse.message,
-            },  
+            },
             correlationId: request.correlationId,
             timestamp: new Date().toISOString(),
         });
-
-        throw new Error('Method not implemented.');
     }
 
     private mapExceptionToResponse(exception: any): {
@@ -63,7 +61,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             };
         }
 
-        if(exception instanceof InfrastructureException) {
+        if (exception instanceof InfrastructureException) {
             return {
                 status: HttpStatus.SERVICE_UNAVAILABLE,
                 type: 'InfrastructureError',
@@ -76,7 +74,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             type: 'InternalServerError',
             message: 'An unexpected error occurred.',
         };
-        
+
     }
-  
+
 }

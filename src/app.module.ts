@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TransactionModule } from './modules/transaction/transaction.module';
@@ -10,6 +10,11 @@ import redisConfig from './config/redis.config';
 import { envValidationSchema } from './config/env.validation';
 import { CorrelationIdMiddleware } from './shared/middleware/correlation-id.middleware';
 import { ChecksumMiddleware } from './shared/middleware/checksum.middleware';
+import { createPostgresPool } from './bootstrap/database.bootstrap';
+import { createRedisClient } from './bootstrap/redis.bootstrap';
+import { createRabbitMQChannel } from './bootstrap/rabbitmq.bootstrap';
+import { Pool } from 'pg';
+import { InfrastructureModule } from './infrastructure/infrastructure.module';
 
 @Module({
   imports: [
@@ -17,7 +22,7 @@ import { ChecksumMiddleware } from './shared/middleware/checksum.middleware';
       isGlobal: true,
       validationSchema: envValidationSchema,
       envFilePath: [
-        '.env.local', 
+        '.env.local',
         '.env',
         `.env.${process.env.NODE_ENV || 'development'}`,
       ],
@@ -28,13 +33,23 @@ import { ChecksumMiddleware } from './shared/middleware/checksum.middleware';
         redisConfig
       ],
     }),
-    TransactionModule],
+    InfrastructureModule,
+    TransactionModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
-    consumer.apply(ChecksumMiddleware).forRoutes('transactions/*');
+    consumer.apply(CorrelationIdMiddleware).forRoutes({
+      path: 'transactions',
+      method: RequestMethod.ALL
+    });
+    consumer.apply(ChecksumMiddleware).forRoutes({
+      path: 'transactions',
+      method: RequestMethod.ALL
+    });
   }
 }

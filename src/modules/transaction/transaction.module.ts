@@ -20,23 +20,12 @@ import { createPostgresPool } from 'src/bootstrap/database.bootstrap';
 import { createRedisClient } from 'src/bootstrap/redis.bootstrap';
 import { createRabbitMQChannel } from 'src/bootstrap/rabbitmq.bootstrap';
 import { RabbitMQConsumer } from './infrastructure/messaging/rabbitmq/rabbitmq.consumer';
+import { TransactionProjection } from './infrastructure/persistence/projections/transaction.projection';
 
 
 @Module({
   controllers: [TransactionController],
   providers: [
-    {
-      provide: Pool,
-      useFactory: createPostgresPool
-    },
-    {
-      provide: 'REDIS_CLIENT',
-      useFactory: createRedisClient,
-    },
-    {
-      provide: 'RABITMQ_CHANNEL',
-      useFactory: createRabbitMQChannel
-    },
     ProcessTransactionHandler,
     GetTransactionStatusHandler,
     ConcurencyLockService,
@@ -62,6 +51,7 @@ import { RabbitMQConsumer } from './infrastructure/messaging/rabbitmq/rabbitmq.c
       provide: 'EventBusPort',
       useClass: RabbitMQPublisher,
     },
+    TransactionProjection,
     RabbitMQConsumer,
     BalanceProjection,
   ]
