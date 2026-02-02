@@ -8,11 +8,11 @@ export type TransactionApprovedEventPayload = {
     approvedAt: Date;
 };
 
-export class TransactionApprovedEvent extends DomainEvent<TransactionApprovedEventPayload>  { 
+export class TransactionApprovedEvent extends DomainEvent<TransactionApprovedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: TransactionApprovedEventPayload) {
         super(eventMetadata, payload);
     }
     getEventName(): string {
-        return "TransactionApproved";
+        return "TransactionApprovedEvent";
     }
 }

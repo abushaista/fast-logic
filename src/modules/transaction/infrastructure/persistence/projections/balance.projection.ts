@@ -2,11 +2,11 @@ import { Pool } from "pg";
 import { BalanceDeductedEvent } from "src/modules/transaction/domain/events/balance-deducted.event";
 
 export class BalanceProjection {
-    constructor(private readonly pool: Pool){}
+    constructor(private readonly pool: Pool) { }
     async project(event: BalanceDeductedEvent) {
         await this.pool.query(
             `
-            UPDATE organization
+            UPDATE organization_balance
             SET balance = balance - $1
             WHERE organization_id = $2
             `,

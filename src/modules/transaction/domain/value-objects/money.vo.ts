@@ -1,11 +1,15 @@
 import { ValueObject } from "src/shared/kernel/value-object";
 
-interface MoneyProps {
+export interface MoneyProps {
   amount: number;
   currency: string;
 }
 
 export class Money extends ValueObject<MoneyProps> {
+  constructor(props: MoneyProps) {
+    super(props);
+    this.Validate(props);
+  }
   get amount(): number {
     return this.props.amount;
   }

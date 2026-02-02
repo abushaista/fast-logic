@@ -13,6 +13,6 @@ export class TransactionCreatedEvent extends DomainEvent<TransactionCreatedEvent
         super(eventMetadata, payload);
     }
     getEventName(): string {
-        return "TransactionCreated";
+        return "TransactionCreatedEvent";
     }
 }
