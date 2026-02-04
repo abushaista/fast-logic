@@ -29,7 +29,7 @@ export class ChecksumMiddleware implements NestMiddleware {
         next();
     }
     computeChecksum(body: any, secret: string): string {
-        const payload = JSON.stringify(body).trim();
+        const payload = (body) ? JSON.stringify(body).trim() : "";
         const normalized = payload.replace(/\s+/g, '');
         const calculated = createHash('sha256')
             .update(normalized + secret)

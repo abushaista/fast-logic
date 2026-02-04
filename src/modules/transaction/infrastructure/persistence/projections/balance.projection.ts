@@ -6,7 +6,7 @@ export class BalanceProjection {
     async project(event: BalanceDeductedEvent) {
         await this.pool.query(
             `
-            UPDATE organization_balance
+            UPDATE organization
             SET balance = balance - $1
             WHERE organization_id = $2
             `,

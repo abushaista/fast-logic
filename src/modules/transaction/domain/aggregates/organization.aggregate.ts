@@ -7,6 +7,7 @@ import { EventMetadata } from "src/shared/kernel/event-metadata";
 import { OrganizationCreatedEvent } from "../events/organization-created.event";
 import { BalanceDeductedEvent } from "../events/balance-deducted.event";
 import { BalanceRule } from "../rules/balance.rule";
+import { BalanceAddedEvent } from "../events/balance-added.event";
 
 export class OrganizationAggregate extends EventSourcedAggregate {
     constructor(id: string) {
@@ -37,10 +38,20 @@ export class OrganizationAggregate extends EventSourcedAggregate {
             }
         ));
     }
+    addBalance(amount: Money, metadata: EventMetadata) {
+        this.ensureState();
+        this.apply(new BalanceAddedEvent(
+            metadata,
+            {
+                amount: amount.amount,
+                currency: amount.currency,
+            }
+        ));
+    }
 
     protected when(event: DomainEvent): void {
         switch (event.getEventName()) {
-            case "OrganizationCreated":
+            case "OrganizationCreatedEvent":
                 this.organization = new Organization(
                     this.id,
                     event.payload.name,
@@ -50,9 +61,15 @@ export class OrganizationAggregate extends EventSourcedAggregate {
                     )
                 );
                 break;
-            case "BalanceDeducted":
+            case "BalanceDeductedEvent":
                 this.ensureState();
                 this.organization.deductBalance(
+                    Money.of(event.payload.amount, event.payload.currency)
+                );
+                break;
+            case "BalanceAddedEvent":
+                this.ensureState();
+                this.organization.addBalance(
                     Money.of(event.payload.amount, event.payload.currency)
                 );
                 break;
@@ -64,15 +81,15 @@ export class OrganizationAggregate extends EventSourcedAggregate {
 
     protected ensureState(): void {
         if (!this.organization) {
-            this.organization = new Organization(this.id, 'Default Org', 
+            this.organization = new Organization(this.id, 'Default Org',
                 new Balance(Money.of(0, 'USD'), this.id)
-            );  
+            );
         }
     }
 
     get state(): Organization {
         this.ensureState();
         return this.organization;
-    }   
-    
+    }
+
 }

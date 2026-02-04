@@ -7,6 +7,7 @@ import {
 import amqp from 'amqplib';
 import { TransactionProjection } from '../../persistence/projections/transaction.projection';
 import { DOMAIN_EVENTS_EXCHANGE, QUEUES, RABBITMQ_CHANNEL, ROUTING_KEYS } from './rabbitmq.constants';
+import { BalanceProjection } from '../../persistence/projections/balance.projection';
 
 @Injectable()
 export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
@@ -14,6 +15,7 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
         @Inject(RABBITMQ_CHANNEL)
         private readonly channel: amqp.Channel,
         private readonly transactionProjection: TransactionProjection,
+        private readonly balanceProjection: BalanceProjection,
     ) { }
     onModuleDestroy() {
         this.channel.close();
@@ -41,7 +43,11 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
                             await this.transactionProjection.project(event);
                             // handled below
                             break;
+                        case 'TransactionApprovedEvent':
+                            await this.transactionProjection.projectUpdate(event);
+                            break;
                         case 'BalanceDeductedEvent':
+                            await this.balanceProjection.project(event);
                             // Future implementation
                             this.channel.ack(msg);
                             return;

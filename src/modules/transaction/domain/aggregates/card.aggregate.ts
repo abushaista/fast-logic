@@ -4,6 +4,7 @@ import { Card } from "../entities/card.entity";
 import { CardCreatedEvent } from "../events/card-created.event";
 import { CardLimitRule } from "../rules/card-limit.rule";
 import { CardLimitUpdatedEvent } from "../events/card-limit-updated.event";
+import { CardLimit } from "../value-objects/card-limit.vo";
 
 export class CardAggregate extends EventSourcedAggregate {
     private card: Card;
@@ -14,7 +15,7 @@ export class CardAggregate extends EventSourcedAggregate {
     }
 
     create(cardNumber: string, dailyLimit: number, monthlyLimit: number, metadata: any): void {
-        if(this.card) {
+        if (this.card) {
             throw new Error("Card already created");
         }
         this.apply(new CardCreatedEvent(
@@ -35,20 +36,36 @@ export class CardAggregate extends EventSourcedAggregate {
                 metadata,
                 {
                     cardId: this.card.id,
+                    amout: amount,
                     cardLimit: this.card.cardLimit.applyTransaction(amount)
                 }
-            )   
+            )
         );
     }
 
     private ensureState(): void {
-        if(!this.card) {
+        if (!this.card) {
             throw new Error("Card not created");
         }
     }
 
     protected when(event: DomainEvent): void {
-        throw new Error("Method not implemented.");
+        switch (event.getEventName()) {
+            case "CardCreatedEvent":
+                this.card = new Card(this.id, event.payload.cardNumber,
+                    new CardLimit({
+                        dailyLimit: event.payload.dailyLimit,
+                        monthlyLimit: event.payload.monthlyLimit,
+                        dailyUsed: 0,
+                        monthlyUsed: 0
+                    }));
+                break;
+            case "CardLimitUpdatedEvent":
+                this.card.applyUsage(event.payload.amount);
+                break;
+            default:
+                break;
+        }
     }
-    
+
 }

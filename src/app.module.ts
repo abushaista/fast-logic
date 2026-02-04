@@ -15,6 +15,7 @@ import { createRedisClient } from './bootstrap/redis.bootstrap';
 import { createRabbitMQChannel } from './bootstrap/rabbitmq.bootstrap';
 import { Pool } from 'pg';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { OrganizationModule } from './modules/organization/organization.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module';
     }),
     InfrastructureModule,
     TransactionModule,
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [
@@ -49,7 +51,7 @@ export class AppModule {
     });
     consumer.apply(ChecksumMiddleware).forRoutes({
       path: 'transactions',
-      method: RequestMethod.ALL
+      method: RequestMethod.POST
     });
   }
 }

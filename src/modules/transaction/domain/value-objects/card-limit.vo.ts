@@ -8,6 +8,9 @@ interface CardLimitProps {
 }
 
 export class CardLimit extends ValueObject<CardLimitProps> {
+  constructor(props: CardLimitProps) {
+    super(props);
+  }
   protected Validate(props: CardLimitProps): void {
     if (props.dailyLimit < 0) {
       throw new Error('Daily limit cannot be negative');
@@ -32,7 +35,7 @@ export class CardLimit extends ValueObject<CardLimitProps> {
   applyTransaction(amount: number): CardLimit {
     const newDailyUsed = this.props.dailyUsed + amount;
     const newMonthlyUsed = this.props.monthlyUsed + amount;
-    return new CardLimit({  
+    return new CardLimit({
       dailyLimit: this.props.dailyLimit,
       monthlyLimit: this.props.monthlyLimit,
       dailyUsed: newDailyUsed,

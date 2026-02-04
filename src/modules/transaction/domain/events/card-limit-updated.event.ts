@@ -4,6 +4,7 @@ import { CardLimit } from "../value-objects/card-limit.vo";
 
 export type CardLimitUpdatedEventPayload = {
     cardId: string;
+    amout: Number;
     cardLimit: CardLimit;
 };
 
