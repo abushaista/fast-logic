@@ -30,12 +30,15 @@ export class OrganizationCommandHandler {
         if (existingTransactionId) {
             return { transactionId: existingTransactionId };
         }
+        command.id = UuidUtil.generate();
         const lockAcquired = await this.concurrencyLockService.acquireLock(lockKey, 10);
         if (!lockAcquired) {
             throw new Error('Could not acquire lock for processing transaction');
         }
         try {
             const result = await this.organizationService.UpdateBalance(command);
+            await this.idempotencyService.save(idemKey, command.id, 3600);
+            return result;
         } catch (error) {
             throw error;
         } finally {

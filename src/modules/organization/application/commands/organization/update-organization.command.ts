@@ -1,6 +1,6 @@
 export class UpdateOrganizationCommand {
     constructor(
-        public readonly id: string,
+        public id: string,
         public readonly Balance: number,
         public readonly correlationId: string,
         public readonly idempotencyKey: string,
