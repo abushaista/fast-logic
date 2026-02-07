@@ -6,7 +6,9 @@ import {
 } from '@nestjs/common';
 import amqp from 'amqplib';
 import { DOMAIN_EVENTS_EXCHANGE, QUEUES, RABBITMQ_CHANNEL, ROUTING_KEYS } from './rabbitmq.constants';
-import { OrganizationProjection } from '../../projections/organization.projection';
+import { OrganizationProjection } from '../../persistence/projections/organization.projection';
+import { DomainEvent } from 'src/shared/kernel/domain-event';
+import type { EventStorePort } from 'src/modules/organization/application/ports/event-store.port';
 
 @Injectable()
 export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
@@ -14,6 +16,8 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
         @Inject(RABBITMQ_CHANNEL)
         private readonly channel: amqp.Channel,
         private readonly organzationProjection: OrganizationProjection,
+        @Inject('EventStorePort')
+        private readonly eventStore: EventStorePort
     ) { }
     onModuleDestroy() {
         this.channel.close();
@@ -35,8 +39,9 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
             async msg => {
                 if (!msg) return;
                 try {
-                    const event = JSON.parse(msg.content.toString());
-                    switch (event.type) {
+                    const event: DomainEvent = JSON.parse(msg.content.toString());
+                    console.log(event)
+                    switch (event.eventType) {
                         case 'OrganizationCreatedEvent':
                             await this.organzationProjection.project(event);
                             // handled below
@@ -51,7 +56,7 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
                             this.channel.ack(msg);
                             break;
                         default:
-                            console.warn(`Unhandled event type: ${event.type}`);
+                            console.warn(`Unhandled event type: ${event.eventType}`);
                             this.channel.ack(msg);
                             return;
                     }

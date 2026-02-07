@@ -11,8 +11,9 @@ export type CardLimitUpdatedEventPayload = {
 export class CardLimitUpdatedEvent extends DomainEvent<CardLimitUpdatedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: CardLimitUpdatedEventPayload) {
         super(eventMetadata, payload);
+        this.eventType = "CardLimitUpdatedEvent";
     }
     getEventName(): string {
-        return "CardLimitUpdatedEvent";
+        return this.eventType;
     }
 }

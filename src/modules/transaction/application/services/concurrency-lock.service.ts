@@ -1,7 +1,12 @@
-import { RedisCachePort } from "../ports/redis-cache.port";
+import { Inject, Injectable } from "@nestjs/common";
+import type { RedisCachePort } from "../ports/redis-cache.port";
 
+@Injectable()
 export class ConcurencyLockService {
-    constructor(private readonly redis: RedisCachePort) {}
+    constructor(
+        @Inject('RedisCachePort')
+        private readonly redis: RedisCachePort
+    ) { }
     async acquireLock(key: string, ttlSeconds: number = 10): Promise<boolean> {
         const existing = await this.redis.get<string>(key);
         if (existing) {

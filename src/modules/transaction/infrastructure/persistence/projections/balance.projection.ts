@@ -7,10 +7,11 @@ export class BalanceProjection {
         await this.pool.query(
             `
             UPDATE organization
-            SET balance = balance - $1
+            SET balance = balance - $1,
+                version = $3
             WHERE organization_id = $2
             `,
-            [event.payload.amount, event.metadata.aggregateId],
+            [event.payload.amount, event.metadata.aggregateId, event.metadata.version],
         );
     }
 }

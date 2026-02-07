@@ -7,7 +7,7 @@ export class InsufficientBalanceException extends DomainException {
 }
 
 export class CardLimitExceededException extends DomainException {
-  constructor() {
-    super('Card limit exceeded');
+  constructor(message: string) {
+    super(`${message} card limit exceeded`);
   }
 }

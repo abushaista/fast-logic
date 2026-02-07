@@ -4,13 +4,16 @@ import { Balance } from "../../domain/entities/balance.entity";
 import { Money } from "../../domain/value-objects/money.vo";
 import { CreateOrganizationCommand } from "../commands/organization/create-organization.command";
 import { OrganizationResult } from "../result/organization-result";
-import { EventStorePort } from "../ports/event-store.port";
-import { EventBusPort } from "../ports/event-bus.port";
+import type { EventStorePort } from "../ports/event-store.port";
+import type { EventBusPort } from "../ports/event-bus.port";
 import { UpdateOrganizationCommand } from "../commands/organization/update-organization.command";
-
+import { Inject, Injectable } from "@nestjs/common";
+@Injectable()
 export class OrganizationService {
     constructor(
+        @Inject('EventStorePort')
         private readonly eventStore: EventStorePort,
+        @Inject('EventBusPort')
         private readonly eventBus: EventBusPort,
     ) { }
     async CreateOrganization(command: CreateOrganizationCommand): Promise<OrganizationResult> {
@@ -32,10 +35,12 @@ export class OrganizationService {
             const events = [
                 ...Organization.pullUncommittedEvents()
             ]
+            await this.eventStore.append(Organization.aggregateId, Organization.currentVersion, events);
             await this.eventBus.publish(events);
             message = `Organization : ${command.name} registered successfully`;
         } catch (error) {
             message = (error as Error).message;
+            console.log(error);
             status = 'failed';
         }
 

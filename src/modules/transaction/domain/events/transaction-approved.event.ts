@@ -11,6 +11,7 @@ export type TransactionApprovedEventPayload = {
 export class TransactionApprovedEvent extends DomainEvent<TransactionApprovedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: TransactionApprovedEventPayload) {
         super(eventMetadata, payload);
+        this.eventType = "TransactionApprovedEvent";
     }
     getEventName(): string {
         return "TransactionApprovedEvent";

@@ -1,15 +1,11 @@
 import { EventStorePort } from "src/modules/transaction/application/ports/event-store.port";
 import { DomainEvent } from "src/shared/kernel/domain-event";
 import { Pool } from 'pg'
-import { EventMapper } from "../../mappers/event.mapper";
-import { Inject, Injectable } from "@nestjs/common";
+import { EventMapper } from "../mappers/event.mapper";
 
-@Injectable()
 export class EventStoreRepository implements EventStorePort {
     constructor(
-        @Inject()
         private readonly pool: Pool,
-        @Inject()
         private readonly mapper: EventMapper
     ) { }
     async load(aggregateId: string, isCurrentMonth?: boolean): Promise<DomainEvent[]> {
@@ -28,6 +24,7 @@ export class EventStoreRepository implements EventStorePort {
         const result = await this.pool.query(query, params);
         return result.rows.map(row => this.mapper.toDomain(row));
     }
+
     async append(aggregateId: string, expectedVersion: number, events: DomainEvent[]): Promise<void> {
         const client = await this.pool.connect();
         try {
@@ -44,7 +41,7 @@ export class EventStoreRepository implements EventStorePort {
                         event.metadata.aggregateId,
                         event.metadata.aggregateType,
                         event.metadata.version,
-                        event.eventType,
+                        event.getEventName(),
                         event.payload,
                         event.metadata,
                     ],

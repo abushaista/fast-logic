@@ -3,11 +3,16 @@ import { ConcurencyLockService } from "../../services/concurrency-lock.service";
 import { IdempotencyService } from "../../services/idempotency.service";
 import { TransactionService } from "../../services/transaction.service";
 import { ProcessTransactionCommand } from "../process-transaction.command";
+import { Inject, Injectable } from "@nestjs/common";
 
+@Injectable()
 export class ProcessTransactionHandler {
     constructor(
+        @Inject()
         private readonly idempotencyService: IdempotencyService,
+        @Inject()
         private readonly transactionService: TransactionService,
+        @Inject()
         private readonly concurrencyLockService: ConcurencyLockService,
     ) { }
     async execute(command: ProcessTransactionCommand) {

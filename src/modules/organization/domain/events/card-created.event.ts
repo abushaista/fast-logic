@@ -11,8 +11,9 @@ export type CardCreatedEventPayload = {
 export class CardCreatedEvent extends DomainEvent<CardCreatedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: CardCreatedEventPayload) {
         super(eventMetadata, payload);
+        this.eventType = "CardCreatedEvent";
     }
     getEventName(): string {
-        return "CardCreatedEvent";
+        return this.eventType;
     }
 }

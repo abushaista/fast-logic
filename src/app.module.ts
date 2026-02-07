@@ -48,7 +48,14 @@ export class AppModule {
     consumer.apply(CorrelationIdMiddleware).forRoutes({
       path: 'transactions',
       method: RequestMethod.ALL
-    });
+    }, {
+      path: 'card',
+      method: RequestMethod.ALL
+    },
+      {
+        path: 'organization',
+        method: RequestMethod.ALL
+      });
     consumer.apply(ChecksumMiddleware).forRoutes({
       path: 'transactions',
       method: RequestMethod.POST

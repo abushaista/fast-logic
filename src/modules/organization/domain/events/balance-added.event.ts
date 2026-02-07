@@ -9,9 +9,10 @@ export type BalanceAddedEventPayload = {
 export class BalanceAddedEvent extends DomainEvent<BalanceAddedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: BalanceAddedEventPayload) {
         super(eventMetadata, payload);
+        this.eventType = 'BalanceAddedEvent';
     }
     getEventName(): string {
-        return 'BalanceAddedEvent';
+        return this.eventType;
     }
 
 }

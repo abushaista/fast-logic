@@ -8,6 +8,7 @@ import amqp from 'amqplib';
 import { TransactionProjection } from '../../persistence/projections/transaction.projection';
 import { DOMAIN_EVENTS_EXCHANGE, QUEUES, RABBITMQ_CHANNEL, ROUTING_KEYS } from './rabbitmq.constants';
 import { BalanceProjection } from '../../persistence/projections/balance.projection';
+import { DomainEvent } from 'src/shared/kernel/domain-event';
 
 @Injectable()
 export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
@@ -24,6 +25,7 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
         await this.start();
     }
     async start() {
+        console.log('start rmq');
         await this.channel.assertQueue(
             QUEUES.TRANSACTION_APPROVED,
             { durable: true },
@@ -37,22 +39,20 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
             async msg => {
                 if (!msg) return;
                 try {
-                    const event = JSON.parse(msg.content.toString());
-                    switch (event.type) {
+                    const event: DomainEvent = JSON.parse(msg.content.toString());
+                    switch (event.eventType) {
                         case 'TransactionApprovedEvent':
                             await this.transactionProjection.project(event);
-                            // handled below
                             break;
                         case 'TransactionApprovedEvent':
                             await this.transactionProjection.projectUpdate(event);
                             break;
                         case 'BalanceDeductedEvent':
                             await this.balanceProjection.project(event);
-                            // Future implementation
                             this.channel.ack(msg);
                             return;
                         default:
-                            console.warn(`Unhandled event type: ${event.type}`);
+                            console.warn(`Unhandled event type: ${event.eventType}`);
                             this.channel.ack(msg);
                             return;
                     }

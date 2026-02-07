@@ -21,6 +21,7 @@ import { createRedisClient } from 'src/bootstrap/redis.bootstrap';
 import { createRabbitMQChannel } from 'src/bootstrap/rabbitmq.bootstrap';
 import { RabbitMQConsumer } from './infrastructure/messaging/rabbitmq/rabbitmq.consumer';
 import { TransactionProjection } from './infrastructure/persistence/projections/transaction.projection';
+import { EventMapper } from './infrastructure/mappers/event.mapper';
 
 
 @Module({
@@ -54,6 +55,7 @@ import { TransactionProjection } from './infrastructure/persistence/projections/
     TransactionProjection,
     RabbitMQConsumer,
     BalanceProjection,
+    EventMapper,
   ]
 })
 export class TransactionModule { }

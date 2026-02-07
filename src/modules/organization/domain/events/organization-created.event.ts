@@ -10,8 +10,9 @@ export type OrganizationCreatedPayload = {
 export class OrganizationCreatedEvent extends DomainEvent<OrganizationCreatedPayload> {
     constructor(eventMetadata: EventMetadata, payload: OrganizationCreatedPayload) {
         super(eventMetadata, payload);
+        this.eventType = "OrganizationCreatedEvent";
     }
     getEventName(): string {
-        return "OrganizationCreatedEvent";
+        return this.eventType;
     }
 }

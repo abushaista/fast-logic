@@ -3,6 +3,7 @@ import {
     Catch,
     ArgumentsHost,
     HttpStatus,
+    HttpException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ConcurrencyException } from 'src/shared/exceptions/concurrency.exception';
@@ -69,10 +70,51 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             };
         }
 
+        if (exception instanceof HttpException) {
+            const status = exception.getStatus();
+            const res = exception.getResponse();
+            let message = '';
+            let type = exception.name || 'HttpException';
+
+            if (typeof res === 'string') {
+                message = res;
+            } else if (res && typeof res === 'object') {
+                const body: any = res as any;
+                if (Array.isArray(body.message)) {
+                    message = body.message.join('; ');
+                } else if (body.message) {
+                    message = String(body.message);
+                } else if (body.error) {
+                    message = String(body.error);
+                } else {
+                    // fallback to stringified body
+                    try {
+                        message = JSON.stringify(body);
+                    } catch {
+                        message = String(body);
+                    }
+                }
+
+                if (body.error) {
+                    type = String(body.error);
+                } else if (body.type) {
+                    type = String(body.type);
+                }
+            } else {
+                message = String(res);
+            }
+
+            return {
+                status: status,
+                type: type,
+                message: message,
+            };
+        }
+
         return {
             status: HttpStatus.INTERNAL_SERVER_ERROR,
             type: 'InternalServerError',
-            message: 'An unexpected error occurred.',
+            message: exception && exception.message ? exception.message : String(exception),
         };
 
     }

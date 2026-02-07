@@ -7,7 +7,6 @@ import {
   RABBITMQ_CHANNEL,
 } from './rabbitmq.constants';
 
-import { TransactionProjection } from '../../persistence/projections/transaction.projection';
 import { Module } from '@nestjs/common/decorators/modules/module.decorator';
 import { Global } from '@nestjs/common';
 import { create } from 'domain';
@@ -22,7 +21,6 @@ import { createRabbitMQChannel } from 'src/bootstrap/rabbitmq.bootstrap';
     },
     RabbitMQPublisher,
     RabbitMQConsumer,
-    TransactionProjection,
   ],
 })
 export class RabbitMQModule { }

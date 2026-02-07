@@ -9,6 +9,7 @@ export type TransactionRejectedEventPayload = {
 export class TransactionRejectedEvent extends DomainEvent<TransactionRejectedEventPayload> {
     constructor(eventMetadata: EventMetadata, payload: TransactionRejectedEventPayload) {
         super(eventMetadata, payload);
+        this.eventType = "TransactionRejectedEvent";
     }
 
     getEventName(): string {
