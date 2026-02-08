@@ -25,7 +25,7 @@ export class OrganizationController {
             dto.organizationName,
             dto.initialBalance,
             dto.currency,
-            UuidUtil.generate()
+            req.correlationId,
         );
         const result = await this.commandHandler.createOrganization(command);
         return result;
@@ -42,7 +42,7 @@ export class OrganizationController {
         const command: UpdateOrganizationCommand = new UpdateOrganizationCommand(
             id,
             dto.balance,
-            UuidUtil.generate(),
+            req.correlationId,
             dto.transactionKey,
         );
         return this.commandHandler.UpdateBalance(command);

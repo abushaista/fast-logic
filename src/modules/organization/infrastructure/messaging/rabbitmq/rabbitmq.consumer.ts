@@ -9,6 +9,7 @@ import { DOMAIN_EVENTS_EXCHANGE, QUEUES, RABBITMQ_CHANNEL, ROUTING_KEYS } from '
 import { OrganizationProjection } from '../../persistence/projections/organization.projection';
 import { DomainEvent } from 'src/shared/kernel/domain-event';
 import type { EventStorePort } from 'src/modules/organization/application/ports/event-store.port';
+import { CardProjection } from '../../persistence/projections/card.projection';
 
 @Injectable()
 export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
@@ -16,6 +17,7 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
         @Inject(RABBITMQ_CHANNEL)
         private readonly channel: amqp.Channel,
         private readonly organzationProjection: OrganizationProjection,
+        private readonly cardProjection: CardProjection,
         @Inject('EventStorePort')
         private readonly eventStore: EventStorePort
     ) { }
