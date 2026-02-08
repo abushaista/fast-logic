@@ -62,6 +62,14 @@ export class CardAggregate extends EventSourcedAggregate {
                 break;
             case "CardLimitUpdatedEvent":
                 this.card.applyUsage(event.payload.amount);
+                const occurredAt = event.metadata.occurredAt;
+                const now = new Date();
+                if(occurredAt.getDate() < now.getDate()) {
+                    this.card.cardLimit.resetDailyUsage();
+                }
+                if(occurredAt.getMonth() < now.getMonth() && occurredAt.getFullYear() < now.getFullYear()) {
+                    this.card.cardLimit.resetMonthlyUsage();
+                }
                 break;
             default:
                 break;
