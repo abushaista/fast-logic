@@ -55,16 +55,15 @@ export class RabbitMQConsumer implements OnModuleInit, OnModuleDestroy {
                             this.channel.ack(msg);
                             return;
                         case 'CardCreatedEvent':
-                            this.channel.ack(msg);
+                            this.cardProjection.project(event);
                             break;
                         default:
                             console.warn(`Unhandled event type: ${event.eventType}`);
                             this.channel.ack(msg);
                             return;
                     }
-
-
                     this.channel.ack(msg);
+                    return;
                 } catch (error) {
                     console.error('RabbitMQ consumer error', error);
                     this.channel.nack(msg, false, false);

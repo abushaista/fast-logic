@@ -2,6 +2,7 @@ import { DomainEvent } from "src/shared/kernel/domain-event";
 import { EventMetadata } from "src/shared/kernel/event-metadata";
 
 export type CardCreatedEventPayload = {
+    organizationId: string;
     cardNumber: string;
     dailyLimit: number;
     monthlyLimit: number;

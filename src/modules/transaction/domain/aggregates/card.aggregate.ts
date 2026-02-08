@@ -14,13 +14,14 @@ export class CardAggregate extends EventSourcedAggregate {
         this.id = id;
     }
 
-    create(cardNumber: string, dailyLimit: number, monthlyLimit: number, metadata: any): void {
+    create(cardNumber: string, organizationId: string, dailyLimit: number, monthlyLimit: number, metadata: any): void {
         if (this.card) {
             throw new Error("Card already created");
         }
         this.apply(new CardCreatedEvent(
             metadata,
             {
+                organizationId,
                 cardNumber,
                 dailyLimit,
                 monthlyLimit,
